@@ -1,0 +1,28 @@
+#docker-compose is used only for development
+version: "3"
+
+services:
+  web:
+    build:
+      context: .
+      args:
+        CONTAINER_ENV: development
+    volumes:
+    - .:/app
+    ports:
+    - 8000:8000
+    depends_on:
+      - db
+    environment:
+      - GUNICORN_SETTINGS_FILE=gunicorn/dev.py
+#    restart:
+#      - always
+
+  db:
+    image: postgres
+    ports:
+    - 15432:5432
+    volumes:
+    - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_PASSWORD=password
